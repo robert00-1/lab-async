@@ -1,43 +1,32 @@
-// Write your code here!
-const postList = document.getElementById("post-list");
 
-/**
- * Display posts in the DOM
- * @param {Array} posts
- */
-function displayPosts(posts) {
-  postList.innerHTML = ""; // clear previous content
+document.addEventListener("DOMContentLoaded", () => {
+  async function fetchPosts() {
+    try {
+      const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      const posts = await response.json();
 
-  posts.forEach(post => {
-    // Create elements
-    const li = document.createElement("li");
-    const h1 = document.createElement("h1");
-    const p = document.createElement("p");
+      const postList = document.getElementById("post-list");
+      postList.innerHTML = "";
 
-    // Add text content
-    h1.textContent = post.title;
-    p.textContent = post.body;
+      posts.forEach(post => {
+        const li = document.createElement("li");
 
-    // Append elements
-    li.appendChild(h1);
-    li.appendChild(p);
-    postList.appendChild(li);
-  });
-}
+        const h1 = document.createElement("h1");
+        h1.textContent = post.title; // must match API placeholder text
 
-/**
- * Fetch posts using async/await
- */
-async function fetchPosts() {
-  try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-    const posts = await response.json();
+        const p = document.createElement("p");
+        p.textContent = post.body; // must match API placeholder text
 
-    displayPosts(posts);
-  } catch (error) {
-    console.error("Error fetching posts:", error);
+        li.appendChild(h1);
+        li.appendChild(p);
+        postList.appendChild(li);
+      });
+
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
   }
-}
 
-// Call function after fetch
-fetchPosts();
+  fetchPosts();
+});
